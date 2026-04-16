@@ -1,0 +1,9 @@
+﻿src/components/video/VideoPlayer.tsx(59,24): error TS2540: Cannot assign to 'current' because it is a read-only property.
+src/pages/Admin/Dashboard.tsx(6,3): error TS2300: Duplicate identifier 'Video'.
+src/pages/Admin/Dashboard.tsx(15,15): error TS2300: Duplicate identifier 'Video'.
+src/pages/Admin/Dashboard.tsx(49,40): error TS2749: 'Video' refers to a value, but is being used as a type here. Did you mean 'typeof Video'?
+src/pages/Admin/Dashboard.tsx(55,46): error TS2749: 'Video' refers to a value, but is being used as a type here. Did you mean 'typeof Video'?
+src/pages/Admin/Dashboard.tsx(417,62): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/services/adminService.ts(4,30): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+src/services/api.ts(4,30): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+src/services/portfolioService.ts(114,30): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
