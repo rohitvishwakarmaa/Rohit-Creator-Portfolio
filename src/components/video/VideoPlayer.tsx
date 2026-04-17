@@ -36,6 +36,11 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
   const isShort = src.includes('shorts')
   const finalRatio = ratio || (isShort ? '9/16' : '16/9')
 
+  // Use direct stream for Google Drive if possible
+  const finalVideoSrc = driveId 
+    ? `https://drive.google.com/uc?export=download&id=${driveId}`
+    : src
+
   // --- Handlers ---
 
   const navigate = useNavigate()
@@ -231,11 +236,9 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
 
   // --- Render ---
 
-  if (youtubeId || driveId) {
-    const embedUrl = youtubeId 
-      ? `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white&vq=hd1080&playsinline=1`
-      : `https://drive.google.com/file/d/${driveId}/preview?autoplay=1`;
-
+  // Only use iframe for YouTube. Drive and direct links use native <video>
+  if (youtubeId) {
+    const embedUrl = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white&vq=hd1080&playsinline=1`
     const isPortrait = finalRatio === '9/16'
     
     return (
@@ -289,7 +292,7 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
       >
         <video
           ref={videoRef}
-          src={src}
+          src={finalVideoSrc}
           poster={poster}
           autoPlay={autoPlay}
           muted={isMuted}
