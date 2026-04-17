@@ -32,9 +32,22 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
   const togglePlay = useCallback(() => {
     const v = videoRef.current
     if (!v) return
-    if (v.paused) { v.play(); setIsPlaying(true) }
-    else { v.pause(); setIsPlaying(false) }
-  }, [])
+    
+    // Auto-fullscreen on mobile when starting play
+    const isMobile = window.innerWidth < 768
+    if (isMobile && v.paused && !document.fullscreenElement) {
+      handleFullscreen()
+    }
+
+    if (v.paused) { 
+      v.play().catch(console.error)
+      setIsPlaying(true) 
+    }
+    else { 
+      v.pause()
+      setIsPlaying(false) 
+    }
+  }, [handleFullscreen])
 
   const toggleMute = useCallback(() => {
     const v = videoRef.current
@@ -109,10 +122,20 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
     return `${m}:${sec.toString().padStart(2, '0')}`
   }
 
+  const [showCover, setShowCover] = useState(true)
+
+  const handleStartEmbed = useCallback(() => {
+    setShowCover(false)
+    const isMobile = window.innerWidth < 768
+    if (isMobile && !document.fullscreenElement) {
+      handleFullscreen()
+    }
+  }, [handleFullscreen])
+
   if (youtubeId || driveId) {
     const embedUrl = youtubeId 
-      ? `https://www.youtube.com/embed/${youtubeId}?autoplay=${autoPlay ? 1 : 0}&mute=${autoPlay ? 1 : 0}&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white&disablekb=1`
-      : `https://drive.google.com/file/d/${driveId}/preview${autoPlay ? '?autoplay=1' : ''}`;
+      ? `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=0&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white`
+      : `https://drive.google.com/file/d/${driveId}/preview?autoplay=1`;
 
     const isPortrait = finalRatio === '9/16'
     
@@ -120,23 +143,44 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
       <div 
         ref={containerRef}
         className={`relative w-full mx-auto transition-all duration-500 rounded-2xl shadow-xl bg-black ${
-          isFullscreen ? 'fixed inset-0 z-[100] rounded-none' : 'overflow-hidden'
+          isFullscreen ? 'fixed inset-0 z-[100] rounded-none bg-black flex items-center justify-center' : 'overflow-hidden'
         }`}
         style={{
-          maxWidth: isPortrait ? '400px' : '100%',
+          maxWidth: isPortrait && !isFullscreen ? '400px' : '100%',
         }}
       >
         <div 
           className="relative w-full overflow-hidden" 
-          style={{ paddingBottom: isPortrait ? '177.77%' : '56.25%' }}
+          style={{ 
+            paddingBottom: isFullscreen ? '0' : (isPortrait ? '177.77%' : '56.25%'),
+            height: isFullscreen ? '100%' : 'auto'
+          }}
         >
-          <iframe
-            src={embedUrl}
-            title={title}
-            className="absolute top-0 left-0 w-full h-full border-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
+          {showCover ? (
+            <div 
+              className="absolute inset-0 z-10 cursor-pointer group"
+              onClick={handleStartEmbed}
+            >
+              <img 
+                src={poster || '/placeholder-thumb.jpg'} 
+                alt={title} 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                <div className="w-20 h-20 rounded-full flex items-center justify-center bg-white/20 backdrop-blur-md border border-white/30 transform transition-transform group-hover:scale-110">
+                  <Play className="w-8 h-8 text-white fill-white ml-1" />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <iframe
+              src={embedUrl}
+              title={title}
+              className="absolute top-0 left-0 w-full h-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          )}
         </div>
       </div>
     )
@@ -146,17 +190,20 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
     <div
       ref={containerRef}
       className={`relative mx-auto transition-all duration-500 rounded-2xl shadow-xl bg-black group select-none ${
-        isFullscreen ? 'fixed inset-0 z-[100] rounded-none' : 'w-full overflow-hidden'
+        isFullscreen ? 'fixed inset-0 z-[100] rounded-none bg-black flex items-center justify-center' : 'w-full overflow-hidden'
       }`}
       style={{
-        maxWidth: finalRatio === '9/16' ? '400px' : '100%',
+        maxWidth: finalRatio === '9/16' && !isFullscreen ? '400px' : '100%',
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => isPlaying && setShowControls(false)}
     >
       <div 
         className="relative w-full overflow-hidden" 
-        style={{ paddingBottom: finalRatio === '9/16' ? '177.77%' : '56.25%' }}
+        style={{ 
+          paddingBottom: isFullscreen ? '0' : (finalRatio === '9/16' ? '177.77%' : '56.25%'),
+          height: isFullscreen ? '100%' : 'auto'
+        }}
       >
         <video
           ref={videoRef}
