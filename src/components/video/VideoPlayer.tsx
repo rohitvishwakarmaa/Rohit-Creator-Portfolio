@@ -111,31 +111,28 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
       ? `https://www.youtube.com/embed/${youtubeId}?autoplay=${autoPlay ? 1 : 0}&mute=${autoPlay ? 1 : 0}&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white&disablekb=1`
       : `https://drive.google.com/file/d/${driveId}/preview${autoPlay ? '?autoplay=1' : ''}`;
 
+    const isPortrait = finalRatio === '9/16'
+    
     return (
       <div 
         ref={containerRef}
-        className={`relative w-full bg-black rounded-2xl overflow-hidden group shadow-2xl mx-auto transition-all duration-500 ${
-          finalRatio === '9/16' 
-            ? 'aspect-[9/16] max-w-[min(400px,90vw)]' 
-            : 'aspect-video w-full'
-        } ${isFullscreen ? 'rounded-none max-w-none h-full' : ''}`}
+        className={`relative w-full mx-auto transition-all duration-500 overflow-hidden rounded-2xl shadow-xl bg-black ${
+          isFullscreen ? 'fixed inset-0 z-[100] rounded-none' : ''
+        }`}
+        style={{
+          maxWidth: isPortrait ? '400px' : '100%',
+          aspectRatio: isPortrait ? '9/16' : '16/9',
+          maxHeight: isFullscreen ? '100vh' : 'auto'
+        }}
       >
         <iframe
           src={embedUrl}
           title={title}
-          className="w-full h-full border-0 object-contain"
+          className="absolute inset-0 w-full h-full border-0"
+          style={{ objectFit: 'contain' }}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />
-        
-        {/* Shield to block the "Pop-out" button on Drive/YouTube iframes */}
-        <div className="absolute top-0 right-0 w-24 h-16 pointer-events-auto" />
-        
-        {!isPlaying && (
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </div>
-        )}
       </div>
     )
   }
@@ -143,11 +140,14 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
   return (
     <div
       ref={containerRef}
-      className={`relative bg-black rounded-2xl overflow-hidden group select-none shadow-2xl mx-auto transition-all duration-500 ${
-        finalRatio === '9/16' 
-          ? 'aspect-[9/16] max-w-[min(400px,90vw)]' 
-          : 'aspect-video w-full'
-      } ${isFullscreen ? 'rounded-none max-w-none h-full' : ''}`}
+      className={`relative mx-auto transition-all duration-500 overflow-hidden rounded-2xl shadow-xl bg-black group select-none ${
+        isFullscreen ? 'fixed inset-0 z-[100] rounded-none' : 'w-full'
+      }`}
+      style={{
+        maxWidth: finalRatio === '9/16' ? '400px' : '100%',
+        aspectRatio: finalRatio === '9/16' ? '9/16' : '16/9',
+        maxHeight: isFullscreen ? '100vh' : 'auto'
+      }}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => isPlaying && setShowControls(false)}
     >
