@@ -167,6 +167,7 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
           onEnded={() => setIsPlaying(false)}
           onClick={togglePlay}
         />
+      </div>
 
       {/* Title overlay */}
       {title && !isPlaying && (
