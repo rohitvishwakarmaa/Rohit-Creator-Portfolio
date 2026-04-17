@@ -6,7 +6,7 @@ export const MOCK_VIDEOS: Video[] = [
     id: 'premium-service-ad',
     title: 'Corporate Excellence — Premium Business Service Ad',
     description: 'A high-impact, professional service advertisement designed for modern businesses. Combining sleek motion graphics with AI-assisted editing to deliver a premium brand message.',
-    video_url: 'https://drive.google.com/file/d/1CdO-L13vxpMD6oHNjGH5TNqtHXKbyFMa/view?usp=sharing',
+    video_url: 'https://youtu.be/1gYgxtwF0GU',
     thumbnail: '/thumbnails/corporate-excellence.jpg',
     tags: ['Business', 'Corporate', 'Professional'],
     category: 'AI Ads',
