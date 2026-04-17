@@ -71,7 +71,7 @@ export default function VideoDetail() {
 
   return (
     <PageWrapper>
-      <div className="pt-28 md:pt-32 pb-20">
+      <div className="pt-24 md:pt-32 pb-20 bg-black sm:bg-transparent min-h-screen">
         <div className="container-xl max-w-5xl px-0 sm:px-6">
           {/* Back button */}
           <motion.div
@@ -88,7 +88,7 @@ export default function VideoDetail() {
                   navigate(-1)
                 }
               }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-50 text-gray-500 hover:text-gray-900 transition-colors group text-xs font-bold uppercase tracking-widest border border-gray-100"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 sm:bg-gray-50 text-white/70 sm:text-gray-500 hover:text-white sm:hover:text-gray-900 transition-colors group text-xs font-bold uppercase tracking-widest border border-white/10 sm:border-gray-100 backdrop-blur-md"
             >
               <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform text-brand-orange" />
               Back to Portfolio
@@ -97,17 +97,17 @@ export default function VideoDetail() {
 
           {/* Video player */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
             className="mb-12 sm:mb-16 px-0 sm:px-0"
           >
-            <div className="sm:rounded-2xl overflow-hidden shadow-2xl">
+            <div className="sm:rounded-2xl overflow-hidden shadow-2xl relative min-h-[40vh] flex items-center bg-black">
               <VideoPlayer
                 src={video.video_url}
                 poster={video.thumbnail}
                 title={video.title}
-                autoPlay={false}
+                autoPlay={true}
                 ratio={video.aspect_ratio}
               />
             </div>

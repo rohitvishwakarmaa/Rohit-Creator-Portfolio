@@ -319,9 +319,16 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
       <div className={`absolute inset-0 transition-opacity duration-500 pointer-events-none ${showControls ? 'opacity-100' : 'opacity-0'}`}>
         {/* Central Play/Pause Toggle */}
         <div className="absolute inset-0 flex items-center justify-center">
-          {!isPlaying && (
-            <button onClick={togglePlay} className="pointer-events-auto w-24 h-24 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/20 transform transition-all hover:scale-110 hover:bg-white/20 group/play">
-              <Play className="w-10 h-10 text-white fill-white ml-2 transition-transform group-hover/play:scale-110" />
+          {(showControls || !isPlaying) && (
+            <button 
+              onClick={togglePlay} 
+              className="pointer-events-auto w-24 h-24 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/20 transform transition-all hover:scale-110 hover:bg-white/20 group/play"
+            >
+              {isPlaying ? (
+                <Pause className="w-10 h-10 text-white fill-white transition-transform group-hover/play:scale-110" />
+              ) : (
+                <Play className="w-10 h-10 text-white fill-white ml-2 transition-transform group-hover/play:scale-110" />
+              )}
             </button>
           )}
         </div>
