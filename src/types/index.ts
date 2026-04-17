@@ -10,6 +10,7 @@ export interface Video {
   client_name: string
   created_at: string
   is_featured: boolean
+  aspect_ratio?: '16/9' | '9/16'
 }
 
 export type VideoCategory =

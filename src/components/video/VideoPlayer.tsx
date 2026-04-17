@@ -7,9 +7,10 @@ interface VideoPlayerProps {
   poster?: string
   title?: string
   autoPlay?: boolean
+  ratio?: '16/9' | '9/16'
 }
 
-export const VideoPlayer = ({ src, poster, title, autoPlay = false }: VideoPlayerProps) => {
+export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/9' }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const progressRef = useRef<HTMLDivElement>(null)
   const [isPlaying, setIsPlaying] = useState(autoPlay)
@@ -72,13 +73,20 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false }: VideoPlaye
     return `${m}:${sec.toString().padStart(2, '0')}`
   }
 
+  const isShort = src.includes('shorts')
+  const finalRatio = ratio || (isShort ? '9/16' : '16/9')
+
   if (youtubeId || driveId) {
     const embedUrl = youtubeId 
       ? `https://www.youtube.com/embed/${youtubeId}?autoplay=${autoPlay ? 1 : 0}&mute=${autoPlay ? 1 : 0}&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white&disablekb=1`
       : `https://drive.google.com/file/d/${driveId}/preview${autoPlay ? '?autoplay=1' : ''}`;
 
     return (
-      <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden group shadow-2xl">
+      <div 
+        className={`relative w-full bg-black rounded-2xl overflow-hidden group shadow-2xl mx-auto ${
+          finalRatio === '9/16' ? 'aspect-[9/16] max-w-[400px]' : 'aspect-video w-full'
+        }`}
+      >
         <iframe
           src={embedUrl}
           title={title}
@@ -101,7 +109,9 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false }: VideoPlaye
 
   return (
     <div
-      className="relative bg-black rounded-2xl overflow-hidden group select-none shadow-2xl"
+      className={`relative bg-black rounded-2xl overflow-hidden group select-none shadow-2xl mx-auto ${
+        finalRatio === '9/16' ? 'aspect-[9/16] max-w-[400px]' : 'aspect-video w-full'
+      }`}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => isPlaying && setShowControls(false)}
     >
@@ -111,7 +121,7 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false }: VideoPlaye
         poster={poster}
         autoPlay={autoPlay}
         muted={autoPlay} // Browsers often require mute for autoplay
-        className="w-full aspect-video object-cover"
+        className="w-full h-full object-cover"
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
         onEnded={() => setIsPlaying(false)}

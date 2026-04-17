@@ -59,14 +59,14 @@ export default function VideoDetail() {
 
   return (
     <PageWrapper>
-      <div className="pt-24 pb-20">
-        <div className="container-xl max-w-5xl">
+      <div className="pt-20 md:pt-24 pb-20">
+        <div className="container-xl max-w-5xl px-0 sm:px-6">
           {/* Back button */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4 }}
-            className="mb-8"
+            className="mb-6 px-4 sm:px-0"
           >
             <button
               onClick={() => navigate(-1)}
@@ -82,14 +82,17 @@ export default function VideoDetail() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-10"
+            className="mb-8 sm:mb-10 px-0 sm:px-0"
           >
-            <VideoPlayer
-              src={video.video_url}
-              poster={video.thumbnail}
-              title={video.title}
-              autoPlay={false}
-            />
+            <div className="sm:rounded-2xl overflow-hidden shadow-2xl">
+              <VideoPlayer
+                src={video.video_url}
+                poster={video.thumbnail}
+                title={video.title}
+                autoPlay={false}
+                ratio={video.aspect_ratio}
+              />
+            </div>
           </motion.div>
 
           {/* Meta info */}
@@ -101,18 +104,24 @@ export default function VideoDetail() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="lg:col-span-2"
             >
-              <div className="flex flex-wrap gap-2 mb-4">
-                {video.is_featured && <Badge label="Featured" variant="featured" />}
-                <Badge label={video.category} variant="category" />
-              </div>
-              <h1 className="font-display font-black text-3xl md:text-4xl text-gray-900 mb-5 leading-tight">
-                {video.title}
-              </h1>
+              <div className="px-4 sm:px-0">
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {video.is_featured && <Badge label="Featured" variant="featured" />}
+                  <Badge label={video.category} variant="category" />
+                </div>
+                <h1 className="font-display font-black text-2xl sm:text-3xl md:text-4xl text-gray-900 mb-5 leading-tight">
+                  {video.title}
+                </h1>
+                
+                <p className="text-gray-600 text-lg leading-relaxed mb-8">
+                  {video.description}
+                </p>
 
-              <div className="flex flex-wrap gap-2">
-                {video.tags.map((tag) => (
-                  <Badge key={tag} label={tag} />
-                ))}
+                <div className="flex flex-wrap gap-2">
+                  {video.tags.map((tag) => (
+                    <Badge key={tag} label={tag} />
+                  ))}
+                </div>
               </div>
             </motion.div>
 
@@ -121,8 +130,9 @@ export default function VideoDetail() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
+              className="px-4 sm:px-0"
             >
-              <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 space-y-5">
+              <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 space-y-5 shadow-sm">
                 <h3 className="font-semibold text-gray-900 text-sm uppercase tracking-wider mb-4">
                   Project Details
                 </h3>
@@ -151,7 +161,7 @@ export default function VideoDetail() {
 
           {/* Related videos */}
           {related.length > 0 && (
-            <div className="mt-16">
+            <div className="mt-16 px-4 sm:px-0">
               <div className="flex items-center justify-between mb-8">
                 <h2 className="font-display font-bold text-2xl text-gray-900">
                   More <span className="gradient-text">{video.category}</span>
