@@ -41,3 +41,10 @@ export function getYouTubeID(url: string): string | null {
   // The ID is usually in the second capture group with this regex
   return (match && match[2]?.length === 11) ? match[2] : null;
 }
+
+export function getGoogleDriveID(url: string): string | null {
+  if (!url) return null;
+  const regExp = /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/;
+  const match = url.match(regExp);
+  return match ? match[1] : null;
+}

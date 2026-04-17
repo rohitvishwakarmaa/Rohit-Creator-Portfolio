@@ -22,7 +22,7 @@ export const PageWrapper = ({ children, hideFooter = false }: PageWrapperProps) 
         initial="initial"
         animate="animate"
         exit="exit"
-        transition={{ duration: 0.45, ease: 'easeOut' }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className="min-h-screen"
       >
         {children}

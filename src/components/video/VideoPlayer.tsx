@@ -1,18 +1,19 @@
 import { useRef, useState, useCallback, type MutableRefObject } from 'react'
 import { Play, Pause, Volume2, VolumeX, Maximize, RotateCcw } from 'lucide-react'
-import { getYouTubeID } from '@/utils'
+import { getYouTubeID, getGoogleDriveID } from '@/utils'
 
 interface VideoPlayerProps {
   src: string
   poster?: string
   title?: string
+  autoPlay?: boolean
 }
 
-export const VideoPlayer = ({ src, poster, title }: VideoPlayerProps) => {
+export const VideoPlayer = ({ src, poster, title, autoPlay = false }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const progressRef = useRef<HTMLDivElement>(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isMuted, setIsMuted] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(autoPlay)
+  const [isMuted, setIsMuted] = useState(autoPlay)
   const [progress, setProgress] = useState(0)
   const [duration, setDuration] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
@@ -20,6 +21,7 @@ export const VideoPlayer = ({ src, poster, title }: VideoPlayerProps) => {
   const controlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null) as MutableRefObject<ReturnType<typeof setTimeout> | null>
 
   const youtubeId = getYouTubeID(src)
+  const driveId = getGoogleDriveID(src)
 
   const togglePlay = useCallback(() => {
     const v = videoRef.current
@@ -70,19 +72,24 @@ export const VideoPlayer = ({ src, poster, title }: VideoPlayerProps) => {
     return `${m}:${sec.toString().padStart(2, '0')}`
   }
 
-  if (youtubeId) {
+  if (youtubeId || driveId) {
+    const embedUrl = youtubeId 
+      ? `https://www.youtube.com/embed/${youtubeId}?autoplay=${autoPlay ? 1 : 0}&mute=${autoPlay ? 1 : 0}&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white&disablekb=1`
+      : `https://drive.google.com/file/d/${driveId}/preview${autoPlay ? '?autoplay=1' : ''}`;
+
     return (
       <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden group shadow-2xl">
-        {/* The YouTube Iframe with optimized parameters */}
         <iframe
-          src={`https://www.youtube.com/embed/${youtubeId}?autoplay=0&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white&disablekb=1`}
+          src={embedUrl}
           title={title}
-          className="w-full h-full border-0 scale-[1.01]" // Slight scale to hide edge artifacts
+          className="w-full h-full border-0 scale-[1.01]"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />
         
-        {/* Premium Mask: A subtle overlay that blocks the YouTube title area when safe */}
+        {/* Shield to block the "Pop-out" button on Drive/YouTube iframes */}
+        <div className="absolute top-0 right-0 w-24 h-16 pointer-events-auto" />
+        
         {!isPlaying && (
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -102,6 +109,8 @@ export const VideoPlayer = ({ src, poster, title }: VideoPlayerProps) => {
         ref={videoRef}
         src={src}
         poster={poster}
+        autoPlay={autoPlay}
+        muted={autoPlay} // Browsers often require mute for autoplay
         className="w-full aspect-video object-cover"
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}

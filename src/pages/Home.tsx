@@ -79,7 +79,7 @@ const TESTIMONIALS = [
   },
 ]
 
-const featuredVideos = MOCK_VIDEOS.filter((v) => v.is_featured).slice(0, 3)
+const featuredVideos = MOCK_VIDEOS.filter((v) => v.is_featured).slice(0, 6)
 
 // ─── STATS ────────────────────────────────────────────────────────────────────
 const STATS = [
@@ -377,7 +377,7 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
             {featuredVideos.map((video, i) => (
               <VideoCard key={video.id} video={video} index={i} />
             ))}

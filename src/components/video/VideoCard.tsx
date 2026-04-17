@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Play, Clock, ArrowUpRight } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
-import { truncate, formatDate, getYouTubeID } from '@/utils'
+import { truncate, formatDate, getYouTubeID, getGoogleDriveID } from '@/utils'
 import type { Video } from '@/types'
 
 interface VideoCardProps {
@@ -15,6 +15,8 @@ export const VideoCard = ({ video, index = 0 }: VideoCardProps) => {
   const [isHovered, setIsHovered] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const isYouTube = !!getYouTubeID(video.video_url)
+  const isDrive = !!getGoogleDriveID(video.video_url)
+  const isExternalEmbed = isYouTube || isDrive
 
   const handleMouseEnter = () => {
     setIsHovered(true)
@@ -49,13 +51,13 @@ export const VideoCard = ({ video, index = 0 }: VideoCardProps) => {
             src={video.thumbnail}
             alt={video.title}
             className={`w-full h-full object-cover transition-all duration-700 ${
-              !isYouTube && isHovered ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
-            } ${isYouTube && isHovered ? 'scale-110' : ''}`}
+              isHovered ? 'scale-110' : 'scale-100'
+            }`}
             loading="lazy"
           />
 
-          {/* Hover video preview (only for non-YouTube/Cloudinary direct links) */}
-          {!isYouTube && (
+          {/* Hover video preview (only for direct links) */}
+          {!isExternalEmbed && (
             <video
               ref={videoRef}
               src={video.video_url}
@@ -92,14 +94,6 @@ export const VideoCard = ({ video, index = 0 }: VideoCardProps) => {
             <Badge label={video.category} variant="category" />
           </div>
 
-          {/* Arrow on hover */}
-          <div
-            className={`absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center transition-all duration-300 ${
-              isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-2'
-            }`}
-          >
-            <ArrowUpRight className="w-4 h-4 text-gray-900" />
-          </div>
         </div>
 
         {/* Content */}

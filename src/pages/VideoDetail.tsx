@@ -8,7 +8,7 @@ import { VideoCard } from '@/components/video/VideoCard'
 import { Badge } from '@/components/ui/Badge'
 import { VideoCardSkeleton } from '@/components/ui/Skeleton'
 import { portfolioService, MOCK_VIDEOS } from '@/services/portfolioService'
-import { formatDate, getYouTubeID } from '@/utils'
+import { formatDate, getYouTubeID, getGoogleDriveID } from '@/utils'
 import type { Video } from '@/types'
 
 export default function VideoDetail() {
@@ -19,6 +19,7 @@ export default function VideoDetail() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    window.scrollTo(0, 0)
     const fetch = async () => {
       setIsLoading(true)
       try {
@@ -80,13 +81,14 @@ export default function VideoDetail() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="mb-10"
           >
             <VideoPlayer
               src={video.video_url}
               poster={video.thumbnail}
               title={video.title}
+              autoPlay={false}
             />
           </motion.div>
 
@@ -143,16 +145,6 @@ export default function VideoDetail() {
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-gray-200">
-                  <a
-                    href={video.video_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-brand-orange text-sm font-semibold hover:gap-3 transition-all"
-                  >
-                    View on {getYouTubeID(video.video_url) ? 'YouTube' : 'Cloudinary'} <ArrowUpRight className="w-4 h-4" />
-                  </a>
-                </div>
               </div>
             </motion.div>
           </div>
