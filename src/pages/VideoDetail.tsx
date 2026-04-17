@@ -69,7 +69,13 @@ export default function VideoDetail() {
             className="mb-8 px-4 sm:px-0"
           >
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => {
+                if (window.innerWidth < 1024) {
+                  navigate('/')
+                } else {
+                  navigate(-1)
+                }
+              }}
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-50 text-gray-500 hover:text-gray-900 transition-colors group text-xs font-bold uppercase tracking-widest border border-gray-100"
             >
               <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform text-brand-orange" />

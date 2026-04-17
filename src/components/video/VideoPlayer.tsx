@@ -88,12 +88,6 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
     const v = videoRef.current
     if (!v) return
     
-    // Auto-fullscreen on mobile when starting play
-    const isMobile = window.innerWidth < 1024
-    if (isMobile && v.paused && !isFullscreen) {
-      handleFullscreen()
-    }
-
     if (v.paused) { 
       setTimeout(() => v.play().catch(console.error), 50)
       setIsPlaying(true) 
@@ -233,9 +227,7 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
 
   const handleStartEmbed = useCallback(() => {
     setShowCover(false)
-    const isMobile = window.innerWidth < 1024
-    if (isMobile && !isFullscreen) handleFullscreen()
-  }, [handleFullscreen, isFullscreen])
+  }, [])
 
   // --- Render ---
 
