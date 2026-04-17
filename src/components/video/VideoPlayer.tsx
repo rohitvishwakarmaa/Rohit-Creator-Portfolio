@@ -88,7 +88,9 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
     }
 
     if (v.paused) { 
-      v.play().catch(console.error)
+      setTimeout(() => {
+        v.play().catch(console.error)
+      }, 50)
       setIsPlaying(true) 
     }
     else { 
@@ -243,6 +245,7 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
           poster={poster}
           autoPlay={autoPlay}
           muted={autoPlay}
+          playsInline
           className="absolute top-0 left-0 w-full h-full object-contain"
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
