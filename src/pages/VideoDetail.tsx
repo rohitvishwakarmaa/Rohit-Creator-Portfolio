@@ -82,7 +82,7 @@ export default function VideoDetail() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-8 sm:mb-10 px-0 sm:px-0"
+            className="mb-12 sm:mb-16 px-0 sm:px-0"
           >
             <div className="sm:rounded-2xl overflow-hidden shadow-2xl">
               <VideoPlayer

@@ -116,23 +116,25 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
     return (
       <div 
         ref={containerRef}
-        className={`relative w-full mx-auto transition-all duration-500 overflow-hidden rounded-2xl shadow-xl bg-black ${
-          isFullscreen ? 'fixed inset-0 z-[100] rounded-none' : ''
+        className={`relative w-full mx-auto transition-all duration-500 rounded-2xl shadow-xl bg-black ${
+          isFullscreen ? 'fixed inset-0 z-[100] rounded-none' : 'overflow-hidden'
         }`}
         style={{
           maxWidth: isPortrait ? '400px' : '100%',
-          aspectRatio: isPortrait ? '9/16' : '16/9',
-          maxHeight: isFullscreen ? '100vh' : 'auto'
         }}
       >
-        <iframe
-          src={embedUrl}
-          title={title}
-          className="absolute inset-0 w-full h-full border-0"
-          style={{ objectFit: 'contain' }}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
+        <div 
+          className="relative w-full overflow-hidden" 
+          style={{ paddingBottom: isPortrait ? '177.77%' : '56.25%' }}
+        >
+          <iframe
+            src={embedUrl}
+            title={title}
+            className="absolute top-0 left-0 w-full h-full border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
       </div>
     )
   }
@@ -140,29 +142,31 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
   return (
     <div
       ref={containerRef}
-      className={`relative mx-auto transition-all duration-500 overflow-hidden rounded-2xl shadow-xl bg-black group select-none ${
-        isFullscreen ? 'fixed inset-0 z-[100] rounded-none' : 'w-full'
+      className={`relative mx-auto transition-all duration-500 rounded-2xl shadow-xl bg-black group select-none ${
+        isFullscreen ? 'fixed inset-0 z-[100] rounded-none' : 'w-full overflow-hidden'
       }`}
       style={{
         maxWidth: finalRatio === '9/16' ? '400px' : '100%',
-        aspectRatio: finalRatio === '9/16' ? '9/16' : '16/9',
-        maxHeight: isFullscreen ? '100vh' : 'auto'
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => isPlaying && setShowControls(false)}
     >
-      <video
-        ref={videoRef}
-        src={src}
-        poster={poster}
-        autoPlay={autoPlay}
-        muted={autoPlay} // Browsers often require mute for autoplay
-        className="w-full h-full object-contain"
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
-        onEnded={() => setIsPlaying(false)}
-        onClick={togglePlay}
-      />
+      <div 
+        className="relative w-full overflow-hidden" 
+        style={{ paddingBottom: finalRatio === '9/16' ? '177.77%' : '56.25%' }}
+      >
+        <video
+          ref={videoRef}
+          src={src}
+          poster={poster}
+          autoPlay={autoPlay}
+          muted={autoPlay}
+          className="absolute top-0 left-0 w-full h-full object-contain"
+          onTimeUpdate={handleTimeUpdate}
+          onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
+          onEnded={() => setIsPlaying(false)}
+          onClick={togglePlay}
+        />
 
       {/* Title overlay */}
       {title && !isPlaying && (
