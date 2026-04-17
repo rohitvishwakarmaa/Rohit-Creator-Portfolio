@@ -1,4 +1,5 @@
 import { useRef, useState, useCallback, useEffect, type MutableRefObject } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Play, Pause, Volume2, VolumeX, Maximize, RotateCcw, Settings, Pip, ChevronRight, ChevronLeft } from 'lucide-react'
 import { getYouTubeID, getGoogleDriveID } from '@/utils'
 
@@ -37,6 +38,8 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
 
   // --- Handlers ---
 
+  const navigate = useNavigate()
+
   const handleFullscreen = useCallback(async () => {
     if (!containerRef.current) return
 
@@ -64,7 +67,7 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
           }
         }
       } else {
-        const exitMethod = (document as any).exitFullscreen || (document as any).webkitExitFullscreen || (document as any).mozCancelFullScreen || (document as any).msExitFullscreen
+        const exitMethod = (document as any).exitFullscreen || (document as any).webkitFullscreenElement || (document as any).webkitExitFullscreen || (document as any).mozCancelFullScreen || (document as any).msExitFullscreen
         if (exitMethod) {
           try { await exitMethod.call(document) } catch (e) {}
         }
@@ -77,7 +80,11 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
     }
   }, [finalRatio, isFullscreen])
 
-  const togglePlay = useCallback(() => {
+  const togglePlay = useCallback((e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation()
+      e.preventDefault()
+    }
     const v = videoRef.current
     if (!v) return
     
@@ -141,6 +148,7 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
   }
 
   const handleDoubleTap = (e: React.MouseEvent) => {
+    e.stopPropagation()
     const isMobile = window.innerWidth < 1024
     if (!isMobile) return
 
@@ -233,7 +241,7 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
 
   if (youtubeId || driveId) {
     const embedUrl = youtubeId 
-      ? `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white`
+      ? `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white&vq=hd1080`
       : `https://drive.google.com/file/d/${driveId}/preview?autoplay=1`;
 
     const isPortrait = finalRatio === '9/16'
@@ -297,7 +305,10 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
           className="absolute top-0 left-0 w-full h-full object-contain"
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
-          onEnded={() => setIsPlaying(false)}
+          onEnded={() => {
+            setIsPlaying(false)
+            if (window.innerWidth < 1024) navigate('/')
+          }}
           onClick={togglePlay}
         />
       </div>
