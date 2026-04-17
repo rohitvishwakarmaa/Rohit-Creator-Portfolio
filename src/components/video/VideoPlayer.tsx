@@ -279,6 +279,7 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
       style={{ maxWidth: finalRatio === '9/16' && !isFullscreen ? '450px' : '100%' }}
       onMouseMove={handleMouseMove}
       onClick={handleDoubleTap}
+      onContextMenu={(e) => e.preventDefault()}
     >
       <div 
         className="relative w-full overflow-hidden" 
@@ -294,6 +295,8 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
           autoPlay={autoPlay}
           muted={isMuted}
           playsInline
+          controlsList="nodownload"
+          onContextMenu={(e) => e.preventDefault()}
           className="absolute top-0 left-0 w-full h-full object-contain"
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
