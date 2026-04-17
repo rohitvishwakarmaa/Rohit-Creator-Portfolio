@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback, useEffect, type MutableRefObject } from 'react'
 import { Play, Pause, Volume2, VolumeX, Maximize, RotateCcw } from 'lucide-react'
-import { getYouTubeID, getGoogleDriveID, formatDate } from '@/utils'
+import { getYouTubeID, getGoogleDriveID } from '@/utils'
 
 interface VideoPlayerProps {
   src: string
@@ -25,6 +25,9 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
 
   const youtubeId = getYouTubeID(src)
   const driveId = getGoogleDriveID(src)
+  
+  const isShort = src.includes('shorts')
+  const finalRatio = ratio || (isShort ? '9/16' : '16/9')
 
   const togglePlay = useCallback(() => {
     const v = videoRef.current
@@ -62,24 +65,29 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
         await containerRef.current.requestFullscreen()
         setIsFullscreen(true)
         
-        if (window.screen?.orientation?.lock) {
+        // Handle orientation if API available and cast to any for TS
+        const screenAny = window.screen as any
+        if (screenAny?.orientation?.lock) {
           if (finalRatio === '16/9') {
-            await window.screen.orientation.lock('landscape').catch(() => {})
+            await screenAny.orientation.lock('landscape').catch(() => {})
           } else {
-            await window.screen.orientation.lock('portrait').catch(() => {})
+            await screenAny.orientation.lock('portrait').catch(() => {})
           }
         }
       } else {
-        await document.exitFullscreen()
+        if (document.exitFullscreen) {
+          await document.exitFullscreen()
+        }
         setIsFullscreen(false)
-        if (window.screen?.orientation?.unlock) {
-          window.screen.orientation.unlock()
+        const screenAny = window.screen as any
+        if (screenAny?.orientation?.unlock) {
+          screenAny.orientation.unlock()
         }
       }
     } catch (err) {
       console.error('Fullscreen error:', err)
     }
-  }, [ratio, src])
+  }, [finalRatio])
 
   useEffect(() => {
     const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement)
@@ -100,9 +108,6 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
     const sec = Math.floor(s % 60)
     return `${m}:${sec.toString().padStart(2, '0')}`
   }
-
-  const isShort = src.includes('shorts')
-  const finalRatio = ratio || (isShort ? '9/16' : '16/9')
 
   if (youtubeId || driveId) {
     const embedUrl = youtubeId 
