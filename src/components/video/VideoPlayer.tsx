@@ -34,8 +34,8 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
     if (!v) return
     
     // Auto-fullscreen on mobile when starting play
-    const isMobile = window.innerWidth < 768
-    if (isMobile && v.paused && !document.fullscreenElement) {
+    const isMobile = window.innerWidth < 1024
+    if (isMobile && v.paused && !isFullscreen) {
       handleFullscreen()
     }
 
@@ -74,11 +74,23 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
     if (!containerRef.current) return
 
     try {
-      if (!document.fullscreenElement) {
-        await containerRef.current.requestFullscreen()
-        setIsFullscreen(true)
+      if (!isFullscreen) {
+        const elem = containerRef.current as any
+        const requestMethod = elem.requestFullscreen || elem.webkitRequestFullscreen || elem.mozRequestFullScreen || elem.msRequestFullscreen
+
+        if (requestMethod) {
+          try {
+            await requestMethod.call(elem)
+            setIsFullscreen(true)
+          } catch (e) {
+            // Fallback to fake fullscreen for iOS/others
+            setIsFullscreen(true)
+          }
+        } else {
+          setIsFullscreen(true)
+        }
         
-        // Handle orientation if API available and cast to any for TS
+        // Handle orientation if API available
         const screenAny = window.screen as any
         if (screenAny?.orientation?.lock) {
           if (finalRatio === '16/9') {
@@ -88,19 +100,23 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
           }
         }
       } else {
-        if (document.exitFullscreen) {
-          await document.exitFullscreen()
+        const exitMethod = (document as any).exitFullscreen || (document as any).webkitExitFullscreen || (document as any).mozCancelFullScreen || (document as any).msExitFullscreen
+        if (exitMethod) {
+          try {
+            await exitMethod.call(document)
+          } catch (e) {}
         }
         setIsFullscreen(false)
+        
         const screenAny = window.screen as any
         if (screenAny?.orientation?.unlock) {
           screenAny.orientation.unlock()
         }
       }
     } catch (err) {
-      console.error('Fullscreen error:', err)
+      setIsFullscreen(!isFullscreen)
     }
-  }, [finalRatio])
+  }, [finalRatio, isFullscreen])
 
   useEffect(() => {
     const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement)
@@ -126,8 +142,8 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
 
   const handleStartEmbed = useCallback(() => {
     setShowCover(false)
-    const isMobile = window.innerWidth < 768
-    if (isMobile && !document.fullscreenElement) {
+    const isMobile = window.innerWidth < 1024
+    if (isMobile && !isFullscreen) {
       handleFullscreen()
     }
   }, [handleFullscreen])
