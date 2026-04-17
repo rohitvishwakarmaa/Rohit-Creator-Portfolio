@@ -18,7 +18,7 @@ export const MOCK_VIDEOS: Video[] = [
     id: 'akshaya-tritiya-celebration',
     title: 'Akshaya Tritiya — Digital Storytelling Heritage Animation',
     description: 'A vibrant storytelling animation celebrating the heritage of Akshaya Tritiya. Rich in cultural motifs and festive colors, crafted with modern animation techniques.',
-    video_url: 'https://drive.google.com/file/d/1d3jb0VIUUWoR625neLolqW4lpI2Vltcl/view?usp=sharing',
+    video_url: 'https://youtu.be/vZiOvg8QBDc',
     thumbnail: '/thumbnails/akshaya-tritiya-celebration.jpg',
     tags: ['Storytelling', 'Heritage', 'Culture'],
     category: 'Animation',

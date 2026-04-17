@@ -192,10 +192,15 @@ export default function VideoDetail() {
                 </div>
 
                 <div className="pt-4">
-                  <button className="w-full py-3 bg-gray-900 text-white rounded-xl text-sm font-semibold hover:bg-brand-orange transition-colors flex items-center justify-center gap-2 group/btn">
+                  <a 
+                    href="https://wa.me/917987252289"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3 bg-gray-900 text-white rounded-xl text-sm font-semibold hover:bg-brand-orange transition-colors flex items-center justify-center gap-2 group/btn"
+                  >
                     Let's Work Together
                     <ArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-                  </button>
+                  </a>
                 </div>
               </div>
             </motion.div>
