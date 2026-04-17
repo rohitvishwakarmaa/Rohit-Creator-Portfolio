@@ -29,47 +29,6 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
   const isShort = src.includes('shorts')
   const finalRatio = ratio || (isShort ? '9/16' : '16/9')
 
-  const togglePlay = useCallback(() => {
-    const v = videoRef.current
-    if (!v) return
-    
-    // Auto-fullscreen on mobile when starting play
-    const isMobile = window.innerWidth < 1024
-    if (isMobile && v.paused && !isFullscreen) {
-      handleFullscreen()
-    }
-
-    if (v.paused) { 
-      v.play().catch(console.error)
-      setIsPlaying(true) 
-    }
-    else { 
-      v.pause()
-      setIsPlaying(false) 
-    }
-  }, [handleFullscreen])
-
-  const toggleMute = useCallback(() => {
-    const v = videoRef.current
-    if (!v) return
-    v.muted = !v.muted
-    setIsMuted(v.muted)
-  }, [])
-
-  const handleTimeUpdate = useCallback(() => {
-    const v = videoRef.current
-    if (!v) return
-    setCurrentTime(v.currentTime)
-    setProgress((v.currentTime / v.duration) * 100)
-  }, [])
-
-  const handleProgressClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = progressRef.current?.getBoundingClientRect()
-    if (!rect || !videoRef.current) return
-    const ratioVal = (e.clientX - rect.left) / rect.width
-    videoRef.current.currentTime = ratioVal * videoRef.current.duration
-  }, [])
-
   const handleFullscreen = useCallback(async () => {
     if (!containerRef.current) return
 
@@ -117,6 +76,48 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
       setIsFullscreen(!isFullscreen)
     }
   }, [finalRatio, isFullscreen])
+
+  const togglePlay = useCallback(() => {
+    const v = videoRef.current
+    if (!v) return
+    
+    // Auto-fullscreen on mobile when starting play
+    const isMobile = window.innerWidth < 1024
+    if (isMobile && v.paused && !isFullscreen) {
+      handleFullscreen()
+    }
+
+    if (v.paused) { 
+      v.play().catch(console.error)
+      setIsPlaying(true) 
+    }
+    else { 
+      v.pause()
+      setIsPlaying(false) 
+    }
+  }, [handleFullscreen])
+
+  const toggleMute = useCallback(() => {
+    const v = videoRef.current
+    if (!v) return
+    v.muted = !v.muted
+    setIsMuted(v.muted)
+  }, [])
+
+  const handleTimeUpdate = useCallback(() => {
+    const v = videoRef.current
+    if (!v) return
+    setCurrentTime(v.currentTime)
+    setProgress((v.currentTime / v.duration) * 100)
+  }, [])
+
+  const handleProgressClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = progressRef.current?.getBoundingClientRect()
+    if (!rect || !videoRef.current) return
+    const ratioVal = (e.clientX - rect.left) / rect.width
+    videoRef.current.currentTime = ratioVal * videoRef.current.duration
+  }, [])
+
 
   useEffect(() => {
     const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement)
