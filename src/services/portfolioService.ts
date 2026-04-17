@@ -54,7 +54,7 @@ export const MOCK_VIDEOS: Video[] = [
     id: 'velora-character',
     title: 'Velora — Cinematic Brand Film: The Essence of Sophistication',
     description: 'A striking product showcase for Velora. "Confidence begins with a single moment." This ad highlights the premium craftsmanship and character of the fragrance.',
-    video_url: 'https://drive.google.com/file/d/1hiFhv0-H-o_9rVTv14ia9sUMc4vsGWNI/view?usp=sharing',
+    video_url: 'https://youtube.com/shorts/RHxWMF3nbEc',
     thumbnail: '/thumbnails/velora-character.jpg',
     tags: ['Product Showcase', 'Luxury', 'Cinematic'],
     category: 'AI Ads',
