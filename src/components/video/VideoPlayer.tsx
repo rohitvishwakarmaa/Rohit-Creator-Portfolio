@@ -233,7 +233,7 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
 
   if (youtubeId || driveId) {
     const embedUrl = youtubeId 
-      ? `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white&vq=hd1080`
+      ? `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white&vq=hd1080&playsinline=1`
       : `https://drive.google.com/file/d/${driveId}/preview?autoplay=1`;
 
     const isPortrait = finalRatio === '9/16'

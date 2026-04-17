@@ -39,6 +39,18 @@ export default function VideoDetail() {
     if (id) fetch()
   }, [id, navigate])
 
+  useEffect(() => {
+    const isMobile = window.innerWidth < 1024
+    if (!isMobile) return
+
+    const handlePopState = () => {
+      navigate('/')
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [navigate])
+
   if (isLoading) {
     return (
       <PageWrapper>
