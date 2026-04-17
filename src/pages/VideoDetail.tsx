@@ -59,20 +59,20 @@ export default function VideoDetail() {
 
   return (
     <PageWrapper>
-      <div className="pt-20 md:pt-24 pb-20">
+      <div className="pt-28 md:pt-32 pb-20">
         <div className="container-xl max-w-5xl px-0 sm:px-6">
           {/* Back button */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4 }}
-            className="mb-6 px-4 sm:px-0"
+            className="mb-8 px-4 sm:px-0"
           >
             <button
               onClick={() => navigate(-1)}
-              className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors group text-sm font-medium"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-50 text-gray-500 hover:text-gray-900 transition-colors group text-xs font-bold uppercase tracking-widest border border-gray-100"
             >
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+              <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform text-brand-orange" />
               Back to Portfolio
             </button>
           </motion.div>
