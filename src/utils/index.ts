@@ -48,3 +48,10 @@ export function getGoogleDriveID(url: string): string | null {
   const match = url.match(regExp);
   return match ? match[1] : null;
 }
+
+export function getDailymotionID(url: string): string | null {
+  if (!url) return null;
+  const regExp = /^.*(dailymotion.com\/video\/|dai.ly\/)([a-zA-Z0-9]+).*/;
+  const match = url.match(regExp);
+  return match ? match[2] : null;
+}

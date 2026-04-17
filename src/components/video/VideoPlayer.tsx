@@ -1,7 +1,7 @@
 import { useRef, useState, useCallback, useEffect, type MutableRefObject } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Play, Pause, Volume2, VolumeX, Maximize, RotateCcw, Settings, ChevronRight, ChevronLeft } from 'lucide-react'
-import { getYouTubeID, getGoogleDriveID } from '@/utils'
+import { getYouTubeID, getGoogleDriveID, getDailymotionID } from '@/utils'
 
 interface VideoPlayerProps {
   src: string
@@ -33,6 +33,7 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
 
   const youtubeId = getYouTubeID(src)
   const driveId = getGoogleDriveID(src)
+  const dailyId = getDailymotionID(src)
   const isShort = src.includes('shorts')
   const finalRatio = ratio || (isShort ? '9/16' : '16/9')
 
@@ -231,11 +232,16 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
 
   // --- Render ---
 
-  // Use iframe for YouTube and Google Drive
-  if (youtubeId || driveId) {
-    const embedUrl = youtubeId 
-      ? `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white&vq=hd1080&playsinline=1`
-      : `https://drive.google.com/file/d/${driveId}/preview`;
+  // Use iframe for YouTube, Google Drive, and Dailymotion
+  if (youtubeId || driveId || dailyId) {
+    let embedUrl = ''
+    if (youtubeId) {
+      embedUrl = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white&vq=hd1080&playsinline=1`
+    } else if (driveId) {
+      embedUrl = `https://drive.google.com/file/d/${driveId}/preview`
+    } else if (dailyId) {
+      embedUrl = `https://www.dailymotion.com/embed/video/${dailyId}?autoplay=1`
+    }
 
     const isPortrait = finalRatio === '9/16'
     

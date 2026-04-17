@@ -30,7 +30,7 @@ export const MOCK_VIDEOS: Video[] = [
     id: 'bhakti-sanga-intro',
     title: 'Divine Resonance — Premium Cinematic Intro for Bhakti Sanga',
     description: 'A sacred and visually stunning cinematic introduction for Bhakti Sanga. Combining spiritual motifs with premium motion graphics to create a divine atmosphere.',
-    video_url: 'https://drive.google.com/file/d/1GTzl1ttZA1AfIVSaycGJo8K5w7oSoo4U/view?usp=sharing',
+    video_url: 'https://dai.ly/k6tto53crPKfgOFzLj8',
     thumbnail: '/thumbnails/bhakti-sanga-intro.jpg',
     tags: ['Spiritual', 'Cinematic', 'Introduction'],
     category: 'AI Ads',
