@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback, useEffect, type MutableRefObject } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Play, Pause, Volume2, VolumeX, Maximize, RotateCcw, Settings, Pip, ChevronRight, ChevronLeft } from 'lucide-react'
+import { Play, Pause, Volume2, VolumeX, Maximize, RotateCcw, Settings, ChevronRight, ChevronLeft } from 'lucide-react'
 import { getYouTubeID, getGoogleDriveID } from '@/utils'
 
 interface VideoPlayerProps {
@@ -388,12 +388,6 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
                 )}
               </div>
 
-              <button 
-                onClick={() => { if(document.pictureInPictureEnabled && videoRef.current) videoRef.current.requestPictureInPicture() }}
-                className="text-white hidden sm:block opacity-60 hover:opacity-100 transition-all"
-              >
-                <Pip className="w-5 h-5" />
-              </button>
 
               <button onClick={handleFullscreen} className="text-white bg-white/10 hover:bg-brand-orange/20 p-2 rounded-xl transition-all border border-white/10 hover:border-brand-orange/40">
                 <Maximize className="w-5 h-5" />
