@@ -120,9 +120,24 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
 
 
   useEffect(() => {
-    const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement)
+    const handleFsChange = () => {
+      const isFs = !!(document.fullscreenElement || (document as any).webkitFullscreenElement || (document as any).mozFullScreenElement)
+      setIsFullscreen(isFs)
+      
+      // Pause on exit fullscreen
+      if (!isFs && videoRef.current) {
+        videoRef.current.pause()
+        setIsPlaying(false)
+      }
+    }
     document.addEventListener('fullscreenchange', handleFsChange)
-    return () => document.removeEventListener('fullscreenchange', handleFsChange)
+    document.addEventListener('webkitfullscreenchange', handleFsChange)
+    document.addEventListener('mozfullscreenchange', handleFsChange)
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFsChange)
+      document.removeEventListener('webkitfullscreenchange', handleFsChange)
+      document.removeEventListener('mozfullscreenchange', handleFsChange)
+    }
   }, [])
 
   const handleMouseMove = useCallback(() => {
@@ -151,7 +166,7 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
 
   if (youtubeId || driveId) {
     const embedUrl = youtubeId 
-      ? `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=0&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white`
+      ? `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&color=white`
       : `https://drive.google.com/file/d/${driveId}/preview?autoplay=1`;
 
     const isPortrait = finalRatio === '9/16'
@@ -160,7 +175,7 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
       <div 
         ref={containerRef}
         className={`relative w-full mx-auto transition-all duration-500 rounded-2xl shadow-xl bg-black ${
-          isFullscreen ? 'fixed inset-0 z-[100] rounded-none bg-black flex items-center justify-center' : 'overflow-hidden'
+          isFullscreen ? 'fixed inset-0 z-[100] rounded-none flex items-center justify-center' : 'overflow-hidden'
         }`}
         style={{
           maxWidth: isPortrait && !isFullscreen ? '400px' : '100%',
