@@ -1,6 +1,6 @@
-import { useRef, useState, useCallback, type MutableRefObject } from 'react'
+import { useRef, useState, useCallback, useEffect, type MutableRefObject } from 'react'
 import { Play, Pause, Volume2, VolumeX, Maximize, RotateCcw } from 'lucide-react'
-import { getYouTubeID, getGoogleDriveID } from '@/utils'
+import { getYouTubeID, getGoogleDriveID, formatDate } from '@/utils'
 
 interface VideoPlayerProps {
   src: string
@@ -50,8 +50,8 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
   const handleProgressClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const rect = progressRef.current?.getBoundingClientRect()
     if (!rect || !videoRef.current) return
-    const ratio = (e.clientX - rect.left) / rect.width
-    videoRef.current.currentTime = ratio * videoRef.current.duration
+    const ratioVal = (e.clientX - rect.left) / rect.width
+    videoRef.current.currentTime = ratioVal * videoRef.current.duration
   }, [])
 
   const handleFullscreen = useCallback(async () => {
@@ -62,7 +62,6 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
         await containerRef.current.requestFullscreen()
         setIsFullscreen(true)
         
-        // Handle orientation if API available
         if (window.screen?.orientation?.lock) {
           if (finalRatio === '16/9') {
             await window.screen.orientation.lock('landscape').catch(() => {})
@@ -80,9 +79,8 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
     } catch (err) {
       console.error('Fullscreen error:', err)
     }
-  }, [finalRatio])
+  }, [ratio, src])
 
-  // Sync fullscreen state
   useEffect(() => {
     const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement)
     document.addEventListener('fullscreenchange', handleFsChange)
