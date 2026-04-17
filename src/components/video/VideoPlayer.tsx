@@ -275,13 +275,25 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
               </div>
             </div>
           ) : (
-            <iframe 
-              src={embedUrl} 
-              title={title} 
-              className="absolute top-0 left-0 w-full h-full border-0" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-              allowFullScreen 
-            />
+            <>
+              <iframe 
+                src={embedUrl} 
+                title={title} 
+                className="absolute top-0 left-0 w-full h-full border-0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen 
+              />
+              {/* Floating Fullscreen Button for Iframes */}
+              <div className="absolute top-4 right-4 z-20 transition-opacity duration-300">
+                <button 
+                  onClick={handleFullscreen} 
+                  className="p-2.5 rounded-xl bg-black/40 backdrop-blur-md border border-white/20 text-white hover:bg-brand-orange transition-all shadow-xl"
+                  title="Toggle Fullscreen"
+                >
+                  <Maximize className="w-5 h-5" />
+                </button>
+              </div>
+            </>
           )}
         </div>
       </div>
