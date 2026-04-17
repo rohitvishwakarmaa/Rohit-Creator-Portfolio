@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Calendar, User, Tag, ArrowUpRight } from 'lucide-react'
+import { ArrowLeft, Calendar, User, Tag, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { VideoPlayer } from '@/components/video/VideoPlayer'
 import { VideoCard } from '@/components/video/VideoCard'
@@ -38,6 +38,10 @@ export default function VideoDetail() {
     }
     if (id) fetch()
   }, [id, navigate])
+
+  const currentIndex = MOCK_VIDEOS.findIndex(v => v.id === id)
+  const prevVideo = currentIndex > 0 ? MOCK_VIDEOS[currentIndex - 1] : null
+  const nextVideo = currentIndex < MOCK_VIDEOS.length - 1 ? MOCK_VIDEOS[currentIndex + 1] : null
 
   useEffect(() => {
     const isMobile = window.innerWidth < 1024
@@ -95,14 +99,32 @@ export default function VideoDetail() {
             </button>
           </motion.div>
 
-          {/* Video player */}
+          {/* Video player controls & container */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
-            className="mb-12 sm:mb-16 px-0 sm:px-0"
+            className="mb-12 sm:mb-16 px-0 sm:px-0 relative group/player"
           >
             <div className="sm:rounded-2xl overflow-hidden shadow-2xl relative min-h-[40vh] flex items-center bg-black">
+              {/* Desktop Nav Arrows */}
+              {prevVideo && (
+                <Link 
+                  to={`/portfolio/${prevVideo.id}`}
+                  className="absolute left-4 z-20 p-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white opacity-0 group-hover/player:opacity-100 transition-all hover:bg-brand-orange hidden lg:flex"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </Link>
+              )}
+              {nextVideo && (
+                <Link 
+                  to={`/portfolio/${nextVideo.id}`}
+                  className="absolute right-4 z-20 p-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white opacity-0 group-hover/player:opacity-100 transition-all hover:bg-brand-orange hidden lg:flex"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </Link>
+              )}
+
               <VideoPlayer
                 src={video.video_url}
                 poster={video.thumbnail}
@@ -110,6 +132,25 @@ export default function VideoDetail() {
                 autoPlay={true}
                 ratio={video.aspect_ratio}
               />
+            </div>
+
+            {/* Mobile Nav Bar */}
+            <div className="flex lg:hidden items-center justify-between mt-4 px-4 bg-white/5 backdrop-blur-xl py-4 rounded-2xl border border-white/10">
+              {prevVideo ? (
+                <Link to={`/portfolio/${prevVideo.id}`} className="text-white/60 hover:text-brand-orange flex items-center gap-2 text-sm font-bold transition-all">
+                  <ChevronLeft className="w-5 h-5" />
+                  Prev
+                </Link>
+              ) : <div />}
+
+              <div className="h-4 w-[1px] bg-white/10" />
+
+              {nextVideo ? (
+                <Link to={`/portfolio/${nextVideo.id}`} className="text-white hover:text-brand-orange flex items-center gap-2 text-sm font-bold transition-all">
+                  Next
+                  <ChevronRight className="w-5 h-5" />
+                </Link>
+              ) : <div />}
             </div>
           </motion.div>
 
