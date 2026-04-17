@@ -66,7 +66,7 @@ export const MOCK_VIDEOS: Video[] = [
     id: 'floral-fusion',
     title: 'Floral Fusion — Premium Berry & Botanical Ad',
     description: 'A masterpiece of liquid art. This 10-second cinematic showcase captures the vibrant energy of a signature berry smoothie, accented by botanical elements and high-speed motion.',
-    video_url: 'https://drive.google.com/file/d/1RF_qVf7r0b-mC5Pesffx0l2Wyh5ovdaU/view?usp=sharing',
+    video_url: 'https://youtube.com/shorts/ktx6-xvMNUI',
     thumbnail: '/thumbnails/floral-fusion.jpg',
     tags: ['Product Ad', 'Cinematic', 'Liquid Motion'],
     category: 'AI Ads',
