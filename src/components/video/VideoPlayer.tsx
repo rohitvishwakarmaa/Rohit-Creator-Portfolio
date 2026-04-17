@@ -251,10 +251,12 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
         style={{ maxWidth: isPortrait && !isFullscreen ? '450px' : '100%' }}
       >
         <div 
-          className="relative w-full overflow-hidden" 
+          className={`relative w-full overflow-hidden ${
+            isPortrait ? 'aspect-[9/16]' : (driveId ? 'aspect-[16/9] sm:aspect-video aspect-[16/12]' : 'aspect-video')
+          }`}
           style={{ 
-            paddingBottom: isFullscreen ? '0' : (isPortrait ? '177.77%' : (window.innerWidth < 1024 ? driveMobilePadding : '56.25%')),
-            height: isFullscreen ? '100%' : 'auto'
+            height: isFullscreen ? '100%' : 'auto',
+            paddingBottom: (isFullscreen || isPortrait || driveId) ? '0' : '56.25%'
           }}
         >
           {showCover ? (
@@ -267,7 +269,13 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
               </div>
             </div>
           ) : (
-            <iframe src={embedUrl} title={title} className="absolute top-0 left-0 w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+            <iframe 
+              src={embedUrl} 
+              title={title} 
+              className="absolute top-0 left-0 w-full h-full border-0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowFullScreen 
+            />
           )}
         </div>
       </div>
