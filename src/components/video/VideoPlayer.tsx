@@ -11,6 +11,7 @@ interface VideoPlayerProps {
 }
 
 export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/9' }: VideoPlayerProps) => {
+  const containerRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const progressRef = useRef<HTMLDivElement>(null)
   const [isPlaying, setIsPlaying] = useState(autoPlay)
@@ -19,6 +20,7 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
   const [duration, setDuration] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
   const [showControls, setShowControls] = useState(true)
+  const [isFullscreen, setIsFullscreen] = useState(false)
   const controlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null) as MutableRefObject<ReturnType<typeof setTimeout> | null>
 
   const youtubeId = getYouTubeID(src)
@@ -52,11 +54,39 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
     videoRef.current.currentTime = ratio * videoRef.current.duration
   }, [])
 
-  const handleFullscreen = useCallback(() => {
-    const v = videoRef.current
-    if (!v) return
-    if (document.fullscreenElement) document.exitFullscreen()
-    else v.requestFullscreen()
+  const handleFullscreen = useCallback(async () => {
+    if (!containerRef.current) return
+
+    try {
+      if (!document.fullscreenElement) {
+        await containerRef.current.requestFullscreen()
+        setIsFullscreen(true)
+        
+        // Handle orientation if API available
+        if (window.screen?.orientation?.lock) {
+          if (finalRatio === '16/9') {
+            await window.screen.orientation.lock('landscape').catch(() => {})
+          } else {
+            await window.screen.orientation.lock('portrait').catch(() => {})
+          }
+        }
+      } else {
+        await document.exitFullscreen()
+        setIsFullscreen(false)
+        if (window.screen?.orientation?.unlock) {
+          window.screen.orientation.unlock()
+        }
+      }
+    } catch (err) {
+      console.error('Fullscreen error:', err)
+    }
+  }, [finalRatio])
+
+  // Sync fullscreen state
+  useEffect(() => {
+    const handleFsChange = () => setIsFullscreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', handleFsChange)
+    return () => document.removeEventListener('fullscreenchange', handleFsChange)
   }, [])
 
   const handleMouseMove = useCallback(() => {
@@ -83,14 +113,17 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
 
     return (
       <div 
-        className={`relative w-full bg-black rounded-2xl overflow-hidden group shadow-2xl mx-auto ${
-          finalRatio === '9/16' ? 'aspect-[9/16] max-w-[400px]' : 'aspect-video w-full'
-        }`}
+        ref={containerRef}
+        className={`relative w-full bg-black rounded-2xl overflow-hidden group shadow-2xl mx-auto transition-all duration-500 ${
+          finalRatio === '9/16' 
+            ? 'aspect-[9/16] max-w-[min(400px,90vw)]' 
+            : 'aspect-video w-full'
+        } ${isFullscreen ? 'rounded-none max-w-none h-full' : ''}`}
       >
         <iframe
           src={embedUrl}
           title={title}
-          className="w-full h-full border-0 scale-[1.01]"
+          className="w-full h-full border-0 object-contain"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />
@@ -109,9 +142,12 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
 
   return (
     <div
-      className={`relative bg-black rounded-2xl overflow-hidden group select-none shadow-2xl mx-auto ${
-        finalRatio === '9/16' ? 'aspect-[9/16] max-w-[400px]' : 'aspect-video w-full'
-      }`}
+      ref={containerRef}
+      className={`relative bg-black rounded-2xl overflow-hidden group select-none shadow-2xl mx-auto transition-all duration-500 ${
+        finalRatio === '9/16' 
+          ? 'aspect-[9/16] max-w-[min(400px,90vw)]' 
+          : 'aspect-video w-full'
+      } ${isFullscreen ? 'rounded-none max-w-none h-full' : ''}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => isPlaying && setShowControls(false)}
     >
@@ -121,7 +157,7 @@ export const VideoPlayer = ({ src, poster, title, autoPlay = false, ratio = '16/
         poster={poster}
         autoPlay={autoPlay}
         muted={autoPlay} // Browsers often require mute for autoplay
-        className="w-full h-full object-cover"
+        className="w-full h-full object-contain"
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
         onEnded={() => setIsPlaying(false)}
